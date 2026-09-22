@@ -1,0 +1,38 @@
+[project]
+name = "changeguard"
+version = "0.1.0"
+description = "Reference workflow for server-side Azure Speech authorization and browser WebRTC media"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "azure-cognitiveservices-speech==1.51.2",
+  "azure-identity>=1.23,<2",
+  "flask>=3.1.2,<4",
+  "gunicorn>=23,<24",
+  "requests>=2.32.4,<3",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["changeguard*"]
+
+[project.optional-dependencies]
+dev = [
+  "playwright>=1.55,<2",
+  "pytest>=8.4,<9",
+  "ruff>=0.13,<1",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

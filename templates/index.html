@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="A reference workflow for server-side Azure Speech authorization and direct browser WebRTC media.">
+  <title>ChangeGuard | Server authorization. Browser media.</title>
+  <link rel="stylesheet" href="/static/app.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="masthead">
+    <a class="brand" href="/" aria-label="ChangeGuard home">
+      <span class="brand-mark" aria-hidden="true">C<span>G</span></span>
+      <span>ChangeGuard<span class="brand-sub">AZURE SPEECH / REFERENCE WORKFLOW</span></span>
+    </a>
+    <nav aria-label="Main navigation">
+      <a href="#architecture">Boundary</a>
+      <a href="#live-demo">Avatar workspace</a>
+      <a href="#review-gate">Review gate</a>
+    </nav>
+    <span id="environment" class="badge neutral" data-testid="environment">Checking execution mode</span>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <p class="eyebrow"><span class="accent-line"></span> CHANGEGUARD / GOVERNED CHANGE</p>
+        <h1 id="hero-title">Move the boundary.<br><span>Keep the experience.</span></h1>
+        <p class="hero-copy">For architects and application owners who need a different trust
+          boundary without losing real-time playback. Azure Speech authorization and signaling
+          move to the server. WebRTC audio and video stay in the browser.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#live-demo">Explore the avatar workspace <span aria-hidden="true">&#8595;</span></a>
+          <a class="text-link" href="#requirement">Start with the requirement <span aria-hidden="true">&#8599;</span></a>
+        </div>
+      </div>
+      <aside class="decision-card" id="requirement" data-testid="requirement">
+        <div class="card-kicker"><span class="badge outline">CG-001</span><span>ARCHITECTURE POLICY</span></div>
+        <blockquote>&ldquo;Keep Azure service credentials and resource identifiers out of the browser.
+          Preserve live playback.&rdquo;</blockquote>
+        <p>This is a customer boundary requirement, <strong>not an Azure vulnerability</strong>.
+          Resource identifiers are metadata, not authentication secrets.</p>
+        <div class="decision-footer"><span class="small-dot"></span> Example architecture policy / reusable implementation</div>
+      </aside>
+    </section>
+
+    <section class="architecture panel" id="architecture" aria-labelledby="boundary-title">
+      <div class="section-head">
+        <div><p class="eyebrow">01 / THE DECISION</p><h2 id="boundary-title">Change signaling. Not the media path.</h2></div>
+        <span class="badge amber">Transport credentials still exist</span>
+      </div>
+      <div class="boundary-grid">
+        <article class="boundary before">
+          <div class="diagram-title"><span class="step-number">A</span><h3>Browser authentication</h3><span class="badge amber">SYNTHETIC ONLY</span></div>
+          <div class="flow" aria-label="Synthetic baseline: browser obtains service credential and authenticates to Azure">
+            <div class="node">Browser<span>Holds service credential</span></div>
+            <span class="arrow warning" aria-hidden="true">&#8594;</span>
+            <div class="node">Azure Speech<span>Auth + signaling</span></div>
+          </div>
+          <p class="boundary-note">Base64 masking changes the representation, not the trust boundary.
+            The safe comparison uses invented, nonfunctional values.</p>
+          <button id="run-comparison" data-testid="run-comparison" class="button secondary">Run the synthetic comparison</button>
+        </article>
+        <article class="boundary after">
+          <div class="diagram-title"><span class="step-number">B</span><h3>Server authentication</h3><span class="badge green">SERVER-SIDE DESIGN</span></div>
+          <div class="flow" aria-label="Browser sends SDP to server, which authenticates to Azure with managed identity">
+            <div class="node compact">Browser<span>SDP offer</span></div>
+            <span class="arrow" aria-hidden="true">&#8594;</span>
+            <div class="node compact server">Server<span>Managed identity</span></div>
+            <span class="arrow" aria-hidden="true">&#8594;</span>
+            <div class="node compact">Azure<span>SDP answer</span></div>
+          </div>
+          <div class="media-path"><span>Browser</span><span class="media-line">DIRECT WEBRTC AUDIO + VIDEO</span><span>Azure</span></div>
+          <p class="boundary-note">Only signaling uses the application server. SDP and ephemeral TURN/ICE
+            credentials remain browser-visible; Azure service authorization does not.</p>
+        </article>
+      </div>
+      <div id="comparison-results" class="comparison-result" data-testid="comparison-results" role="status">
+        Comparison not run. No real credentials are exposed by this demonstration.
+      </div>
+    </section>
+
+    <section class="demo-section" id="live-demo" aria-labelledby="demo-title">
+      <div class="section-head">
+        <div><p class="eyebrow">02 / AVATAR WORKSPACE</p><h2 id="demo-title">Inspect the experience. Control the cost.</h2></div>
+        <button id="operator-button" data-testid="operator-button" class="button secondary" hidden>Unlock operator</button>
+      </div>
+      <div class="demo-grid">
+        <article class="player-card panel">
+          <div class="player-toolbar"><span class="live-dot" id="live-dot"></span>
+            <span id="player-state" data-testid="player-state" role="status">Recorded example / no live session</span>
+            <span id="session-clock" class="muted">90s maximum</span></div>
+          <div class="video-stage">
+            <video id="avatar-video" data-testid="avatar-video" autoplay muted playsinline aria-label="Live Azure avatar video"></video>
+            <audio id="avatar-audio" autoplay></audio>
+            <img id="recorded-avatar" class="recorded-avatar" src="/static/images/recorded-avatar.png"
+              width="730" height="411" alt="Recorded Azure stock-avatar output, shown as a read-only still, not a live session">
+            <span id="recorded-label" class="recorded-label badge amber">RECORDED EXAMPLE / NOT LIVE</span>
+            <div id="player-placeholder" class="player-placeholder" hidden>
+              <div class="placeholder-mark" aria-hidden="true"><span></span><span></span><span></span></div>
+              <h3>A real session. On your terms.</h3>
+              <p>Authenticated start. Bounded cost.<br>Playback is measured, never inferred from HTTP success.</p>
+              <span class="badge neutral" id="operator-status" data-testid="operator-status">Read-only visitor</span>
+            </div>
+          </div>
+          <div class="player-controls">
+            <button id="start-avatar" data-testid="start-avatar" class="button primary" disabled>Start live avatar</button>
+            <button id="speak-avatar" data-testid="speak-avatar" class="button secondary" disabled>Speak a sample</button>
+            <button id="stop-avatar" data-testid="stop-avatar" class="button danger" disabled>End session</button>
+            <button id="sound-toggle" class="icon-button" aria-pressed="false" disabled>Sound off</button>
+          </div>
+          <p class="player-caption" id="spoken-caption" data-testid="spoken-caption">A still from a recorded Azure stock-avatar session.
+            It is not a new execution of this checkout. The separate recorded report identifies its scope.</p>
+          <p id="session-message" class="session-message" data-testid="session-message" role="status">
+            Offline preview is read-only. No Azure account, credentials or operator login are needed.
+          </p>
+        </article>
+        <aside class="proof-panel panel">
+          <div class="proof-heading"><h3>Observable, not assumed</h3><span class="badge outline" id="metrics-label">CURRENT SESSION</span></div>
+          <div class="metrics">
+            <div class="metric"><span>Decoded video frames</span><strong id="frames" data-testid="frames">--</strong><small>Browser inbound RTP statistics</small></div>
+            <div class="metric"><span>Video dimensions</span><strong id="dimensions" data-testid="dimensions">--</strong><small>Rendered HTML video, not server status</small></div>
+            <div class="metric"><span>Inbound audio bytes</span><strong id="audio-bytes" data-testid="audio-bytes">--</strong><small>Audio transport received by the browser</small></div>
+            <div class="metric"><span>First decoded frame</span><strong id="first-frame" data-testid="first-frame">--</strong><small>Measured from operator start</small></div>
+          </div>
+          <div class="boundary-policy">
+            <span class="policy-icon" aria-hidden="true">&#10003;</span>
+            <div><h4>Service authorization: server-only</h4><p>No browser Speech SDK. No Azure auth WebSocket.
+              Obsolete token route removed.</p></div>
+          </div>
+          <h4 class="ledger-title">Application response ledger <span>values intentionally omitted</span></h4>
+          <ol id="request-ledger" data-testid="request-ledger" class="request-ledger" aria-label="Sanitized request ledger"></ol>
+          <p class="transport-note">SDP contains transient ICE credentials and DTLS fingerprints. TURN configuration
+            includes relay credentials. Neither is described here as &ldquo;no credentials whatsoever.&rdquo;</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="evidence-section panel" id="acceptance" aria-labelledby="evidence-title">
+      <div class="section-head">
+        <div><p class="eyebrow">03 / REPEATABLE EVIDENCE</p><h2 id="evidence-title">Keep the claim attached to its run.</h2></div>
+        <button id="evidence-refresh" data-testid="evidence-refresh" class="button secondary">Inspect recorded example</button>
+      </div>
+      <div class="evidence-summary" id="evidence-summary" data-testid="evidence-summary">Loading recorded evidence...</div>
+      <div id="evidence-checks" data-testid="evidence-checks" class="check-grid"></div>
+      <p class="fine-print">The recorded example describes one bounded WebKit run, not this checkout or continuous
+        monitoring. Offline assertions and new live measurements remain separate.
+        <a href="/static/examples/recorded-session.json">Read the example JSON and provenance</a>.</p>
+    </section>
+
+    <section class="review-section" id="review-gate" data-testid="review-gate" aria-labelledby="review-title">
+      <div>
+        <p class="eyebrow">04 / PORTABLE REVIEW WORKFLOW</p>
+        <h2 id="review-title">Evidence makes it reviewable.<br>People make the decision.</h2>
+        <p class="review-copy">Requirement, architecture, code and separately labeled measurements travel together
+          in the pull request. GitHub Copilot App can help plan and review the change. The role prompts,
+          ordinary source files and test commands also work in other development workflows.</p>
+      </div>
+      <div class="gate-card">
+        <ol class="workflow-list">
+          <li><span>01</span><div>Business requirement<small>CG-001 / explicit acceptance criteria</small></div><span class="step-label">FIXTURE</span></li>
+          <li><span>02</span><div>Analyze + propose<small>Verified upstream SDK / bounded design</small></div><span class="step-label">ARTIFACT</span></li>
+          <li><span>03</span><div>Reject the wrong fix<small>Base64 masking fails the same policy</small></div><span class="step-label">MACHINE GATE</span></li>
+          <li><span>04</span><div>Implement + evaluate<small>Offline tests / separate live browser evidence</small></div><span class="step-label">REPEATABLE</span></li>
+          <li class="pending"><span>05</span><div>Human PR review<small>No invented approval. No production release.</small></div><span class="badge amber">PENDING</span></li>
+        </ol>
+      </div>
+    </section>
+  </main>
+  <footer><a href="https://github.com/jrubiosainz/changeguard">CHANGEGUARD / REFERENCE WORKFLOW</a><span>Customer policy. Real media. Honest boundaries.</span><span id="build-label">Source pending</span></footer>
+  <dialog id="operator-dialog" aria-labelledby="operator-title">
+    <form id="operator-form">
+      <button class="dialog-close" id="close-dialog" type="button" aria-label="Close operator sign in">&#215;</button>
+      <p class="eyebrow">SCOPED DEMO AUTHORIZATION</p><h2 id="operator-title">Operator access</h2>
+      <p>This is an application operator token, <strong>never an Azure service credential</strong>.
+        Only a configured live server accepts operator access. Offline preview needs no login.</p>
+      <label for="operator-token">Operator token</label>
+      <input id="operator-token" name="token" type="password" autocomplete="off" minlength="32" required>
+      <p id="login-error" role="alert"></p>
+      <button class="button primary" type="submit">Authorize this browser for 30 minutes</button>
+    </form>
+  </dialog>
+</body>
+</html>

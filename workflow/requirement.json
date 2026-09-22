@@ -1,0 +1,29 @@
+{
+  "id": "CG-001",
+  "kind": "business-requirement-fixture",
+  "title": "Keep Azure Speech authorization inside the application server",
+  "requester": "Synthetic enterprise architecture board",
+  "classification": "Customer architecture policy, not an Azure vulnerability",
+  "requirement": "The application must not deliver Azure Speech keys, service authorization tokens, Entra tokens, tenant/subscription identifiers or Speech ARM identifiers to browser code, HTTP responses, request URLs, browser logs or recordings. Preserve real-time browser-to-Azure avatar media.",
+  "allowedBrowserData": [
+    "SDP offer/answer including transient ICE username/password and DTLS fingerprint",
+    "Ephemeral WebRTC TURN relay configuration, only for an authenticated operator",
+    "Opaque application session identifiers and an HttpOnly application authorization cookie",
+    "Public Azure service/relay hostnames and media endpoint IPs"
+  ],
+  "nonGoals": [
+    "Fixing an Azure service vulnerability",
+    "Claiming that resource identifiers are authentication secrets",
+    "Hiding necessary WebRTC network/transport metadata",
+    "Automatically approving or releasing a production change"
+  ],
+  "acceptance": [
+    {"id": "CG-A1", "criterion": "No Azure service credential or actual ARM/tenant/subscription identifier in live application responses, URLs or browser console."},
+    {"id": "CG-A2", "criterion": "Obsolete Speech-token issuing routes return 404 for all tested methods, including when authenticated."},
+    {"id": "CG-A3", "criterion": "A real browser receives increasing decoded video frames, nonzero video dimensions and inbound audio bytes. Record the actual engine, version and operating system; never claim an untested browser passed."},
+    {"id": "CG-A4", "criterion": "Unauthenticated or cross-origin billable requests are denied before any provider call."},
+    {"id": "CG-A5", "criterion": "A synthetic unmodified baseline and base64-obfuscation wrong fix both fail the same boundary policy."},
+    {"id": "CG-A6", "criterion": "One concurrent session, a 90-second server deadline, bounded start rate and reliable closure."},
+    {"id": "CG-A7", "criterion": "Evidence labels fixture versus live execution and leaves approval pending human review."}
+  ]
+}

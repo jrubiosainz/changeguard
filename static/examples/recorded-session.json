@@ -1,0 +1,155 @@
+{
+  "schemaVersion": 1,
+  "applicationId": "changeguard",
+  "kind": "recorded-example",
+  "executionMode": "recorded-example",
+  "title": "A bounded Azure avatar session observed in WebKit",
+  "provenance": {
+    "originalReportSha256": "9e7df206099d3983126c1b4848a2e2be14aa7375388f6512cc839bae449990f1",
+    "recordedAt": "2026-09-21T20:12:55.775342+00:00",
+    "transformation": "public metadata adaptation only"
+  },
+  "sourceBinding": "An existing recorded service session, not an execution of this checkout. The original report hash identifies the source record, not this derived JSON.",
+  "browser": {
+    "engine": "webkit",
+    "version": "26.6",
+    "location": "local-macos"
+  },
+  "execution": {
+    "mode": "recorded-example",
+    "attempts": 1,
+    "automaticRetries": 0
+  },
+  "metrics": [
+    {
+      "name": "decoded_video_frames",
+      "value": 606,
+      "unit": "frames",
+      "kind": "measured",
+      "method": "RTCPeerConnection.getStats inbound-rtp framesDecoded"
+    },
+    {
+      "name": "inbound_audio_bytes",
+      "value": 150615,
+      "unit": "bytes",
+      "kind": "measured",
+      "method": "RTCPeerConnection.getStats inbound-rtp audio bytesReceived"
+    },
+    {
+      "name": "total_video_frames",
+      "value": 610,
+      "unit": "frames",
+      "kind": "measured",
+      "method": "HTMLVideoElement.getVideoPlaybackQuality totalVideoFrames; this total can include dropped frames and is not a decoded-frame count"
+    },
+    {
+      "name": "video_width",
+      "value": 1920,
+      "unit": "pixels",
+      "kind": "measured",
+      "method": "Native video.videoWidth"
+    },
+    {
+      "name": "video_height",
+      "value": 1080,
+      "unit": "pixels",
+      "kind": "measured",
+      "method": "Native video.videoHeight"
+    },
+    {
+      "name": "first_frame_latency",
+      "value": 12216,
+      "unit": "milliseconds",
+      "kind": "measured",
+      "method": "Operator start to first requestVideoFrameCallback"
+    },
+    {
+      "name": "evaluation_duration",
+      "value": 73.36,
+      "unit": "seconds",
+      "kind": "measured",
+      "method": "Monotonic wall time including authorization, checks and closure"
+    },
+    {
+      "name": "browser_response_count",
+      "value": 12,
+      "unit": "responses",
+      "kind": "measured",
+      "method": "Observed application response bodies; response headers, URLs and console events also inspected"
+    },
+    {
+      "name": "browser_boundary_findings",
+      "value": 0,
+      "unit": "categories",
+      "kind": "measured",
+      "method": "Bounded in-memory raw, URL-encoded and base64 pattern inspection, including configured resource identifiers"
+    },
+    {
+      "name": "response_inspection_errors",
+      "value": 0,
+      "unit": "responses",
+      "kind": "measured",
+      "method": "Unreadable expected response bodies count as errors, not clean results"
+    },
+    {
+      "name": "protocol_bodyless_responses",
+      "value": 0,
+      "unit": "responses",
+      "kind": "measured",
+      "method": "HEAD, 204/205/304 and redirect responses; headers and URLs still inspected"
+    },
+    {
+      "name": "azure_auth_websockets_in_browser",
+      "value": 0,
+      "unit": "connections",
+      "kind": "measured",
+      "method": "Observed browser WebSocket connections, not inferred from HTTP"
+    }
+  ],
+  "checks": [
+    {
+      "id": "actual-video-playback",
+      "status": "pass",
+      "passed": true,
+      "details": "Recorded run: 606 decoded frames, increasing frame callbacks and 1920 x 1080 native video dimensions. The separate totalVideoFrames counter was 610 and can include dropped frames."
+    },
+    {
+      "id": "inbound-audio",
+      "status": "pass",
+      "passed": true,
+      "details": "Recorded run: 150,615 inbound audio bytes; the counter increased during synthesis."
+    },
+    {
+      "id": "speech-synthesis",
+      "status": "pass",
+      "passed": true,
+      "details": "The authenticated server-side synthesis request completed in the recorded session."
+    },
+    {
+      "id": "browser-credential-boundary",
+      "status": "pass",
+      "passed": true,
+      "details": "Twelve response bodies plus headers, URLs and console events inspected in this bounded run: zero findings and zero inspection errors. This is not an exhaustive security assessment."
+    },
+    {
+      "id": "operator-protection",
+      "status": "pass",
+      "passed": true,
+      "details": "All four anonymous avatar operations returned 401; authenticated cross-origin preparation returned 403 before starting a session."
+    },
+    {
+      "id": "server-session-closed",
+      "status": "pass",
+      "passed": true,
+      "details": "Authenticated status confirmed that the recorded operator session was no longer active after explicit closure."
+    }
+  ],
+  "limitations": [
+    "Selected checks and unchanged measurements from one WebKit 26.6 run on macOS; no claim that the current checkout, every browser or every network has passed a live run.",
+    "The boundary inspection covers observed application responses, URLs and console events, not all browser memory or every possible encoding.",
+    "SDP, ephemeral TURN/ICE credentials and media network addresses remain visible to an authorized operator.",
+    "The browser-authentication baseline is an invented, nonfunctional fixture, never a live credential exposure.",
+    "A stock-avatar still is recorded service output, not a new service invocation, a live stream or original filmed footage.",
+    "The native totalVideoFrames counter includes decoded and potentially dropped frames; it must not be reported as 610 decoded frames."
+  ]
+}

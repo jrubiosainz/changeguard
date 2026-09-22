@@ -1,0 +1,41 @@
+{
+  "id": "CG-PLAN-001",
+  "requirementId": "CG-001",
+  "status": "implementation-proposal-not-human-approval",
+  "proposedBoundary": {
+    "azureAuthentication": "server-managed-identity",
+    "signaling": "server-speech-sdk",
+    "media": "browser-to-azure-webrtc",
+    "tokenIssuingRoute": "removed",
+    "billableOperations": "authenticated-operator-only",
+    "turnConfiguration": "protected-transport-only",
+    "errorDetails": "allowlisted-public-codes-only"
+  },
+  "deployment": {
+    "speech": "SpeechServices S0, westeurope, local/key authentication disabled",
+    "hosting": "Single Linux App Service B1 instance, Python 3.12, one worker with threads",
+    "identity": "System-assigned managed identity; Cognitive Services Speech User on the new Speech resource only",
+    "scope": "Only the application resource group explicitly supplied to deployment",
+    "deadlineSeconds": 90,
+    "automaticStartRetries": 0,
+    "maximumStartsPerHour": 8
+  },
+  "rejectedAlternatives": [
+    {"id": "base64-mask", "reason": "Browser can decode the same Azure authorization credential. Fails the boundary policy."},
+    {"id": "custom-domain-only", "reason": "A custom endpoint is needed for Entra authentication, but does not remove browser authorization material."},
+    {"id": "strip-token-claims", "reason": "Modifying a signed token is not a supported authorization or policy solution."},
+    {"id": "disable-playback", "reason": "A blank player passes a naive token scan but fails the actual media acceptance criteria."}
+  ],
+  "reviewGate": {
+    "automatedArchitecturePolicy": "must-pass-before-deploy",
+    "humanApproval": "pending",
+    "productionRelease": "not-authorized",
+    "rule": "Passing automation makes the PR reviewable, never approved."
+  },
+  "knownTradeoffs": [
+    "The official Python sample uses SpeechSDKInternal-ExtraTurnStartMessage; pin the SDK and require a live compatibility check.",
+    "Transient TURN/ICE credentials and media endpoint network addresses remain browser-visible by design.",
+    "One-process session ownership is suitable for this small demo, not a horizontally scaled production service.",
+    "Operator authorization is a scoped high-entropy application token exchanged for a short-lived HttpOnly cookie, not full enterprise SSO."
+  ]
+}
