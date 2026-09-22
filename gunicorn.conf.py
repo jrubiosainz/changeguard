@@ -1,0 +1,10 @@
+bind = "0.0.0.0:8000"
+workers = 1
+worker_class = "gthread"
+threads = 8
+timeout = 75
+graceful_timeout = 10
+accesslog = None
+errorlog = "-"
+loglevel = "warning"
+capture_output = False
